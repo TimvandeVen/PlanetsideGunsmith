@@ -1,6 +1,5 @@
 name: Deploy to GitHub Pages
 
-# Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -10,6 +9,9 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '6.0.202'
 
 jobs:
   deploy:
@@ -24,14 +26,14 @@ jobs:
         uses: actions/setup-dotnet@v2.0.0
         with:
           # SDK version to use
-          dotnet-version: 6.0.x
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Core Project
-        run: dotnet publish ~/PlanetsideGunsmith/src/PlanetsideGunsmith/PlanetsideGunsmith.csproj -c Release -o release --nologo
+        run: dotnet publish ../src/PlanetsideGunsmith -c Release -o release --nologo
         
       # changes the base-tag in index.html from '/' to 'PlanetsideGunsmith' to match GitHub Pages repository subdirectory
-      - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+      - name: Change base-tag in index.html from / to PlanetsideGunsmith
         run: sed -i 's/<base href="\/" \/>/<base href="\/PlanetsideGunsmith\/" \/>/g' release/wwwroot/index.html
         
       # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
