@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Publish
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -18,8 +18,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Uses GitHub's checkout action to checkout code from the master branch
-      - uses: actions/checkout@v3
+      # Uses GitHub's checkout action to checkout code from the main branch
+      - name: Checkout main branch
+        uses: actions/checkout@v3
 
       # Sets up .NET Core SDK 6.0.x
       - name: Setup .NET Core SDK
