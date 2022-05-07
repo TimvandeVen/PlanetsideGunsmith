@@ -30,7 +30,7 @@ jobs:
 
       # Publishes Blazor project to the release-folder
       - name: Publish .NET Core Project
-        run: dotnet publish ../src/PlanetsideGunsmith -c Release -o release --nologo
+        run: dotnet publish -c Release -o release --nologo
         
       # changes the base-tag in index.html from '/' to 'PlanetsideGunsmith' to match GitHub Pages repository subdirectory
       - name: Change base-tag in index.html from / to PlanetsideGunsmith
