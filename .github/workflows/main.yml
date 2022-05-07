@@ -12,17 +12,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "deploy"
   deploy:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Uses GitHub's checkout action to checkout code from the master branch
       - uses: actions/checkout@v3
 
-      # Used to build and publish .NET source.
+      # Sets up .NET Core SDK 6.0.4
       - name: Setup .NET Core SDK
         uses: actions/setup-dotnet@v2.0.0
         with:
@@ -33,9 +30,16 @@ jobs:
       - name: Publish .NET Core Project
         run: dotnet publish PlanetsideGunsmith.csproj -c Release -o release --nologo
         
-      # Deploys Blazor project to GitHub pages
+      # changes the base-tag in index.html from '/' to 'PlanetsideGunsmith' to match GitHub Pages repository subdirectory
+      - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+        run: sed -i 's/<base href="\/" \/>/<base href="\/PlanetsideGunsmith\/" \/>/g' release/wwwroot/index.html
+        
+      # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+      - name: Add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+        
       - name: Commit wwwroot to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.3.3
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
